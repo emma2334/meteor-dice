@@ -1,1 +1,15 @@
 /* CSS declarations go here */
+body {
+  /*box-sizing: border-box !important;*/
+  margin: 0;
+}
+
+.info {
+  position: absolute;
+  margin: 0 1em;
+}
+
+canvas {
+  width: 100vw !important;
+  height: 100vh !important;
+}

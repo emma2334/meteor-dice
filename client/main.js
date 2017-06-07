@@ -9,10 +9,6 @@ Template.dice.rendered = function() {
   var box = new $t.dice.dice_box(canvas, { w: 500, h: 300 });
   box.animate_selector = false;
 
-  $t.bind(window, 'resize', function() {
-      box.reinit(canvas, { w: 500, h: 300 });
-  });
-
   box.clear();
 
   function before_roll(vectors, notation, callback) {

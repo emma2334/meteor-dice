@@ -1,22 +1,35 @@
-import { Template } from 'meteor/templating';
-import { ReactiveVar } from 'meteor/reactive-var';
+import '../imports/ui/dice.js';
 
-import './main.html';
+Template.dice.rendered = function() {
+  var canvas = this.$('canvas')[0];
+  var set = { value: 'd6' };
 
-Template.hello.onCreated(function helloOnCreated() {
-  // counter starts at 0
-  this.counter = new ReactiveVar(0);
-});
+  $t.dice.use_true_random = false;
 
-Template.hello.helpers({
-  counter() {
-    return Template.instance().counter.get();
-  },
-});
+  var box = new $t.dice.dice_box(canvas, { w: 500, h: 300 });
+  box.animate_selector = false;
 
-Template.hello.events({
-  'click button'(event, instance) {
-    // increment the counter when button is clicked
-    instance.counter.set(instance.counter.get() + 1);
-  },
-});
+  $t.bind(window, 'resize', function() {
+      box.reinit(canvas, { w: 500, h: 300 });
+  });
+
+  box.clear();
+
+  function before_roll(vectors, notation, callback) {
+    callback();
+  }
+
+  function notation_getter() {
+      return $t.dice.parse_notation(set.value);
+  }
+
+  function after_roll(notation, result) {
+    var res = result.join(' ');
+    if (notation.constant) res += ' +' + notation.constant;
+    if (result.length > 1) res += ' = ' +
+            (result.reduce(function(s, a) { return s + a; }) + notation.constant);
+  }
+
+  box.bind_mouse(canvas, notation_getter, before_roll, after_roll);
+  box.bind_throw(canvas, notation_getter, before_roll, after_roll);
+}
